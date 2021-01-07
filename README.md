@@ -34,7 +34,15 @@ _如果应用中有依赖[外部云上资源](https://docs.cloudbase.net/framewo
 
 - RESOURCE：外部资源描述
 
-### 注意事项
+## 开发
+
+你也可以下载项目后，使用 [CloudBase CLI](https://docs.cloudbase.net/cli-v1/intro.html) 在终端中一键部署。
+
+```
+npx @cloudbase/cli -e 环境id
+```
+
+## 注意事项
 
 1. _这里填写注意事项_
 2. _这里填写注意事项_
