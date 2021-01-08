@@ -39,7 +39,7 @@ _如果应用中有依赖[外部云上资源](https://docs.cloudbase.net/framewo
 你也可以下载项目后，使用 [CloudBase CLI](https://docs.cloudbase.net/cli-v1/intro.html) 在终端中一键部署。
 
 ```
-npx @cloudbase/cli -e 环境id
+npx @cloudbase/cli framework deploy -e 环境id
 ```
 
 ## 注意事项
