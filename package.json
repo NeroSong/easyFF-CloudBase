@@ -1,0 +1,59 @@
+{
+  "name": "vue",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prestart": "npm install",
+    "dev": "npm run serve",
+    "deploy": "cloudbase framework deploy",
+    "deploy:client": "cloudbase framework deploy client",
+    "deploy:server": "cloudbase framework deploy server",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@cloudbase/vue-provider": "^0.4.0",
+    "core-js": "^3.6.4",
+    "element-ui": "^2.15.0",
+    "vue": "^2.6.11",
+    "vue-clipboard2": "^0.3.1",
+    "vue-router": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.3.0",
+    "@vue/cli-plugin-eslint": "^4.3.0",
+    "@vue/cli-service": "^4.3.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "less": "^4.1.0",
+    "less-loader": "^7.3.0",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "vue": {
+    "publicPath": "/vue/",
+    "devServer": {
+      "port": 5000
+    }
+  }
+}

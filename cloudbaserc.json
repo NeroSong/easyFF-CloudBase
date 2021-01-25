@@ -1,20 +1,33 @@
 {
-  "envId": "{{env.ENV_ID}}",
   "version": "2.0",
+  "envId": "nero-lib-1gxdadxufcb31d0b",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
+  "functionRoot": "cloudfunctions",
   "framework": {
     "name": "easyFF",
     "plugins": {
-      "fn": {
+      "client": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "buildCommand": "npm run build",
+          "outputPath": "dist",
+          "cloudPath": "/vue",
+          "envVariables": {
+            "VUE_APP_ENV_ID": "{{env.ENV_ID}}"
+          }
+        }
+      },
+      "server": {
         "use": "@cloudbase/framework-plugin-function",
         "inputs": {
-          "functionRootPath": "./functions",
+          "functionRootPath": "cloudfunctions",
           "functions": [
             {
               "name": "easyFF-ffmpeg",
               "installDependency": true,
               "runtime": "Nodejs10.15",
               "timeout": 20,
+              "memory": 256,
               "ignore": [
                 "node_modules",
                 "node_modules/**/*",
@@ -33,20 +46,6 @@
               "collectionName": "easyFF-record",
               "aclTag": "READONLY"
             }
-          ]
-        }
-      },
-      "web": {
-        "use": "@cloudbase/framework-plugin-website",
-        "inputs": {
-          "outputPath": "web/public",
-          "envVariables": {
-            "ENV_ID": "{{env.ENV_ID}}"
-          },
-          "ignore": [
-            ".git",
-            ".github",
-            "node_modules"
           ]
         }
       },
