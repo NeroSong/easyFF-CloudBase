@@ -161,12 +161,12 @@
       <el-row style="margin-bottom: 10px;">
         在当前环境的
         <a
-          href="https://console.cloud.tencent.com/tcb/storage/index?rid=4"
+          href="https://console.cloud.tencent.com/tcb/storage/index?envId=nero-lib-1gxdadxufcb31d0b&rid=4&tabId=file"
           target="_blank"
         >
           云储存控制台</a
         >
-        中，上传原文件，粘贴 fileID 至 path/p2
+        中，上传原文件，粘贴 fileID 至 path 及 p2
       </el-row>
       <span slot="footer">
         <el-row type="flex" justify="end">
@@ -206,7 +206,11 @@
         v-if="showAnsDown"
         justify="start"
       >
-        <el-button size="small" @click="downFile" type="success"
+        <el-button
+          size="small"
+          :loading="downLoading"
+          @click="downFile"
+          type="success"
           >下载文件</el-button
         >
       </el-row>
@@ -311,6 +315,7 @@ export default {
       showAnsDown: true,
       tableLoading: false,
       btnLoading: false,
+      downLoading: false,
       path: "",
       p2: "",
       fnName: "test",
@@ -346,22 +351,139 @@ export default {
 
       switch (this.currentPos) {
         case 1001: {
-          let data = { pid: 1001, path: this.path, t: this.paraAdd }
-          this.callFn(data)
+          if (this.path.length < 1 || this.paraAdd.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1001, path: this.path, t: this.paraAdd }
+            this.callFn(data)
+          }
           break
         }
 
         case 1002: {
-          let data = { pid: 1002, path: this.path, t: this.paraAdd }
-          this.callFn(data)
+          if (this.path.length < 1 || this.paraAdd.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let tmp = this.paraAdd.trim()
+            tmp = tmp.replace("，", ",")
+            let t = tmp.split(",")[0].trim()
+            let l = tmp.split(",")[1].trim()
+            console.log(t, l)
+            let data = { pid: 1002, path: this.path, t: t, len: l }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1003: {
+          if (this.path.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1003, path: this.path }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1004: {
+          if (this.path.length < 1 || this.paraAdd.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1004, path: this.path, s: this.paraAdd }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1005: {
+          if (this.path.length < 1 || this.p2.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1005, path: this.path, p2: this.p2 }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1006: {
+          if (this.path.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1006, path: this.path }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1007: {
+          if (this.path.length < 1 || this.p2.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1007, path: this.path, p2: this.p2 }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1008: {
+          if (this.path.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1008, path: this.path }
+            this.callFn(data)
+          }
+          break
+        }
+
+        case 1009: {
+          if (this.path.length < 1 || this.p2.length < 1) {
+            this.$notify({
+              title: "错误",
+              message: "请填入正确的参数",
+              type: "warning",
+            })
+          } else {
+            let data = { pid: 1009, path: this.path, p2: this.p2 }
+            this.callFn(data)
+          }
           break
         }
 
         default:
           break
       }
-
-      this.btnLoading = false
     },
 
     callFn(d) {
@@ -387,22 +509,27 @@ export default {
             title: "错误",
             message: e,
           })
+          this.btnLoading = false
           console.log(e)
         })
     },
 
-    async downFile() {
-      try {
-        await this.$cloudbase.downloadFile({
+    downFile() {
+      this.downLoading = true
+      this.$cloudbase
+        .downloadFile({
           fileID: this.ffAns.msg,
         })
-      } catch (error) {
-        this.$notify.error({
-          title: "错误",
-          message: error,
+        .then(() => {
+          this.downLoading = false
         })
-        console.log(error)
-      }
+        .catch((e) => {
+          this.$notify.error({
+            title: "错误",
+            message: e,
+          })
+          this.downLoading = false
+        })
     },
     copyEnv() {
       this.$copyText(this.envID).then(
