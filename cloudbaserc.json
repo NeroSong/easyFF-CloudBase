@@ -3,7 +3,64 @@
   "version": "2.0",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
   "framework": {
-    "name": "app-template",
-    "plugins": {}
+    "name": "easyFF",
+    "plugins": {
+      "fn": {
+        "use": "@cloudbase/framework-plugin-function",
+        "inputs": {
+          "functionRootPath": "./functions",
+          "functions": [
+            {
+              "name": "easyFF-ffmpeg",
+              "installDependency": true,
+              "runtime": "Nodejs10.15",
+              "timeout": 20,
+              "ignore": [
+                "node_modules",
+                "node_modules/**/*",
+                ".git",
+                ".md"
+              ]
+            }
+          ]
+        }
+      },
+      "db": {
+        "use": "@cloudbase/framework-plugin-database",
+        "inputs": {
+          "collections": [
+            {
+              "collectionName": "easyFF-record",
+              "aclTag": "READONLY"
+            }
+          ]
+        }
+      },
+      "web": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "outputPath": "web/public",
+          "envVariables": {
+            "ENV_ID": "{{env.ENV_ID}}"
+          },
+          "ignore": [
+            ".git",
+            ".github",
+            "node_modules"
+          ]
+        }
+      },
+      "auth": {
+        "use": "@cloudbase/framework-plugin-auth",
+        "inputs": {
+          "configs": [
+            {
+              "platform": "ANONYMOUS",
+              "status": "ENABLE"
+            }
+          ]
+        }
+      }
+    }
   }
 }

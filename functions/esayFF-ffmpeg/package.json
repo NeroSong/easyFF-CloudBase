@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.5.0",
+    "fs": "^0.0.1-security",
+    "shelljs": "^0.8.4",
+    "string-random": "^0.1.3"
+  }
+}

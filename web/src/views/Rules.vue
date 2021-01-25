@@ -28,7 +28,7 @@
             <el-col :span="12">
               <el-row type="flex" align="middle">
                 <span class="text-main-pre">云函数名称：</span>
-                <span>esayFF-ffmpeg</span>
+                <span>{{ fnName }}</span>
                 <el-button
                   plain
                   size="small"
@@ -160,12 +160,7 @@
       </el-row>
       <el-row style="margin-bottom: 10px;">
         在当前环境的
-        <a
-          href="https://console.cloud.tencent.com/tcb/storage/index?envId=nero-lib-1gxdadxufcb31d0b&rid=4&tabId=file"
-          target="_blank"
-        >
-          云储存控制台</a
-        >
+        <a :href="getURL" target="_blank"> 云储存控制台</a>
         中，上传原文件，粘贴 fileID 至 path 及 p2
       </el-row>
       <span slot="footer">
@@ -235,7 +230,7 @@ export default {
   data() {
     return {
       tab: "info",
-      envID: "test-id-666688880000",
+      envID: "",
       //   tableData:[],
       tableData: [
         {
@@ -318,11 +313,23 @@ export default {
       downLoading: false,
       path: "",
       p2: "",
-      fnName: "test",
+      fnName: "easyFF-ffmpeg",
     }
   },
 
-  created() {},
+  created() {
+    this.envID = process.env.VUE_APP_ENV_ID || config.envId
+  },
+
+  computed: {
+    getURL() {
+      return (
+        "https://console.cloud.tencent.com/tcb/storage/index?envId=" +
+        this.envID +
+        "&rid=4&tabId=file"
+      )
+    },
+  },
 
   methods: {
     checkFF(p) {
@@ -552,7 +559,7 @@ export default {
       )
     },
     copyFn() {
-      this.$copyText("esayFF-ffmpeg").then(
+      this.$copyText(this.fnName).then(
         (e) => {
           this.$notify({
             title: "成功",
