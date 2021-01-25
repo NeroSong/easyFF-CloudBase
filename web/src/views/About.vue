@@ -24,13 +24,13 @@
         3. 云函数处理完成后返回生成文件，点击下载查看 <br />
         4. 如无问题则说明成功，可按照相关参数在各个客户端SDK调用 <br />
       </p>
-      <p>
+      <!-- <p>
         <span class="bgt">企业微信提醒：</span>
       </p>
       <p style="margin-left:20px;">
         需绑定 WebHook 地址，成功后会收到一条提醒。 <br />
         后续当调用发生异常，处理失败时会自动发送通知。
-      </p>
+      </p> -->
       <p>
         easyFF 目前还在较为初级的预览版，欢迎访问我们的
         <a href="https://github.com/NeroSong/easyFF-CloudBase" target="_blank">

@@ -20,6 +20,7 @@
                   size="small"
                   style="margin-left:20px;"
                   type="success"
+                  @click="copyEnv"
                   >复制</el-button
                 >
               </el-row>
@@ -33,6 +34,7 @@
                   size="small"
                   style="margin-left:20px;"
                   type="success"
+                  @click="copyFn"
                   >复制</el-button
                 >
               </el-row>
@@ -107,49 +109,112 @@
       </el-col>
     </el-row>
     <el-dialog
-      title="添加转换规则"
+      title="测试转换规则"
       width="600px"
-      :visible.sync="dialogAdd"
+      :visible.sync="dialogCheck"
       :close-on-click-modal="false"
       :show-close="false"
     >
       <el-row style="margin-bottom: 10px;" type="flex" justify="start">
         <el-col style="width:70px; margin-top: 5px;">类型：</el-col>
-        <el-select v-model="valueType" size="medium" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
+        <el-col style="width:80%;">
+          <el-row type="flex" justify="start" style="margin-top: 5px;">
+            {{ cuType }}
+          </el-row>
+        </el-col>
       </el-row>
       <el-row style="margin-bottom: 10px;">
         <el-col style="width:70px; margin-top: 5px;">说明：</el-col>
         <el-col style="width:80%;">
-          <el-row type="flex" justify="start" style="margin-top: 5px;">
-            {{ valueAbout }}
+          <el-row
+            type="flex"
+            justify="start"
+            style="margin-top: 5px; text-align: left;"
+          >
+            {{ cuAbout }}
           </el-row>
-          <!-- <el-input
-            size="small"
-            v-model="valueAbout"
-          ></el-input> -->
         </el-col>
       </el-row>
-      <el-row style="margin-bottom: 10px;">
+      <el-row style="margin-bottom: 10px;" v-show="showParaAdd">
         <el-col style="width:70px; margin-top: 5px;">参数：</el-col>
         <el-col style="width:80%;">
           <el-input clearable size="small" v-model="paraAdd"></el-input>
         </el-col>
       </el-row>
+      <el-row style="margin-bottom: 10px;" type="flex" justify="start">
+        <el-col style="width:70px; margin-top: 5px;">path：</el-col>
+        <el-col style="width:80%;">
+          <el-input clearable size="small" v-model="path"></el-input>
+        </el-col>
+      </el-row>
+      <el-row
+        style="margin-bottom: 10px;"
+        type="flex"
+        v-show="showP2"
+        justify="start"
+      >
+        <el-col style="width:70px; margin-top: 5px;">p2：</el-col>
+        <el-col style="width:80%;">
+          <el-input clearable size="small" v-model="p2"></el-input>
+        </el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px;">
+        在当前环境的
+        <a
+          href="https://console.cloud.tencent.com/tcb/storage/index?rid=4"
+          target="_blank"
+        >
+          云储存控制台</a
+        >
+        中，上传原文件，粘贴 fileID 至 path/p2
+      </el-row>
       <span slot="footer">
         <el-row type="flex" justify="end">
           <span>
-            <el-button size="medium" @click="dialogAdd = false"
+            <el-button size="medium" @click="dialogCheck = false"
               >取 消</el-button
             >
-            <el-button size="medium" type="primary" @click="addNew"
+            <el-button
+              size="medium"
+              :loading="btnLoading"
+              type="primary"
+              @click="gotoFF"
+              >确 定</el-button
+            >
+          </span>
+        </el-row>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="转换结果"
+      width="500px"
+      :visible.sync="dialogAns"
+      :close-on-click-modal="false"
+      :show-close="false"
+    >
+      <el-row style="margin-bottom: 10px;" type="flex" justify="start">
+        转换完成，结果如下。
+      </el-row>
+
+      <el-row style="margin-bottom: 10px;" type="flex" justify="start">
+        {{ ffAns }}
+      </el-row>
+
+      <el-row
+        style="margin-bottom: 10px;"
+        type="flex"
+        v-if="showAnsDown"
+        justify="start"
+      >
+        <el-button size="small" @click="downFile" type="success"
+          >下载文件</el-button
+        >
+      </el-row>
+
+      <span slot="footer">
+        <el-row type="flex" justify="end">
+          <span>
+            <el-button size="medium" type="primary" @click="dialogAns = false"
               >确 定</el-button
             >
           </span>
@@ -163,7 +228,6 @@
 export default {
   name: "Rules",
   components: {},
-  created() {},
   data() {
     return {
       tab: "info",
@@ -174,12 +238,14 @@ export default {
           pid: 1001,
           type: "视频指定位置截图",
           para: "t: 5",
+          paraAdd: "5",
           note: "参数为：需要截图的时间点t。以秒为单位，默认为第5秒截图",
         },
         {
           pid: 1002,
           type: "视频截取片段",
           para: "t: 0, len: 10",
+          paraAdd: "0,10",
           note:
             "参数为：截取片段的开始时间t，持续时间len。默认为0秒开始，截取10秒",
         },
@@ -187,59 +253,196 @@ export default {
           pid: 1003,
           type: "短视频转为Gif图",
           para: "无",
+          paraAdd: "",
           note: "无需额外参数",
         },
         {
           pid: 1004,
           type: "视频添加文字水印",
           para: "s: '水印'",
+          paraAdd: "水印",
           note: "参数为：水印字符串s。默认为“水印”二字",
         },
         {
           pid: 1005,
           type: "视频添加图片水印",
           para: "p2: 'aa.jpg'",
+          paraAdd: "",
           note: "参数为：水印图片在云端的地址p2。在使用本规则时为必选参数。",
         },
         {
           pid: 1006,
           type: "视频消音",
           para: "无",
+          paraAdd: "",
           note: "无需额外参数",
         },
         {
           pid: 1007,
           type: "视频添加Bgm",
           para: "p2: 'xx.mp3'",
+          paraAdd: "",
           note: "参数为：背景音乐在云端的地址p2。在使用本规则时为必选参数。",
         },
         {
           pid: 1008,
           type: "获取视频Bgm",
           para: "无",
+          paraAdd: "",
           note: "无需额外参数",
         },
         {
           pid: 1009,
           type: "音乐转为封面视频",
           para: "p2: 'yy.jpg'",
+          paraAdd: "",
           note: "参数为作为视频的封面图片p2。在使用本规则时为必选参数。",
         },
       ],
-      dialogAdd: false,
+      dialogCheck: false,
+      dialogAns: false,
+      currentPos: 1001,
+      paraAdd: "",
+      cuType: "",
+      cuAbout: "",
+      showParaAdd: true,
+      showP2: false,
+      ffAns: { ret: "0", msg: "aaa/bbb/ccc.mp4" },
+      showAnsDown: true,
+      tableLoading: false,
+      btnLoading: false,
+      path: "",
+      p2: "",
+      fnName: "test",
     }
   },
 
-  watch: {
-    valueType: function(val) {
-      this.valueAbout = this.aboutArrs[val]
-      this.paraAdd = this.paraArrs[val]
-    },
-  },
+  created() {},
 
   methods: {
-    addNew() {
-      this.dialogAdd = false
+    checkFF(p) {
+      let id = this.tableData.findIndex((i) => i.pid == p)
+      console.log(id)
+      this.currentPos = p
+      this.cuType = this.tableData[id].type
+      this.cuAbout = this.tableData[id].note
+      this.paraAdd = this.tableData[id].paraAdd
+      if (this.tableData[id].para == "无") {
+        this.showParaAdd = false
+      } else {
+        this.showParaAdd = true
+      }
+      if (this.tableData[id].para.substr(0, 2) == "p2") {
+        this.showParaAdd = false
+        this.showP2 = true
+      } else {
+        this.showP2 = false
+      }
+
+      this.dialogCheck = true
+    },
+    async gotoFF() {
+      this.btnLoading = true
+
+      switch (this.currentPos) {
+        case 1001: {
+          let data = { pid: 1001, path: this.path, t: this.paraAdd }
+          this.callFn(data)
+          break
+        }
+
+        case 1002: {
+          let data = { pid: 1002, path: this.path, t: this.paraAdd }
+          this.callFn(data)
+          break
+        }
+
+        default:
+          break
+      }
+
+      this.btnLoading = false
+    },
+
+    callFn(d) {
+      this.$cloudbase
+        .callFunction({
+          name: this.fnName,
+          data: d,
+        })
+        .then((res) => {
+          this.btnLoading = false
+          this.ffAns = res.result
+          if (res.result.ret == 0) {
+            this.showAnsDown = true
+          } else {
+            this.showAnsDown = false
+          }
+          this.dialogAns = true
+          this.dialogCheck = false
+          console.log(res.result)
+        })
+        .catch((e) => {
+          this.$notify.error({
+            title: "错误",
+            message: e,
+          })
+          console.log(e)
+        })
+    },
+
+    async downFile() {
+      try {
+        await this.$cloudbase.downloadFile({
+          fileID: this.ffAns.msg,
+        })
+      } catch (error) {
+        this.$notify.error({
+          title: "错误",
+          message: error,
+        })
+        console.log(error)
+      }
+    },
+    copyEnv() {
+      this.$copyText(this.envID).then(
+        (e) => {
+          this.$notify({
+            title: "成功",
+            message: "复制成功",
+            type: "success",
+          })
+          console.log(e)
+        },
+        function(e) {
+          this.$notify({
+            title: "警告",
+            message: "复制失败，请手动复制",
+            type: "warning",
+          })
+          console.log(e)
+        }
+      )
+    },
+    copyFn() {
+      this.$copyText("esayFF-ffmpeg").then(
+        (e) => {
+          this.$notify({
+            title: "成功",
+            message: "复制成功",
+            type: "success",
+          })
+          console.log(e)
+        },
+        function(e) {
+          this.$notify({
+            title: "警告",
+            message: "复制失败，请手动复制",
+            type: "warning",
+          })
+          console.log(e)
+        }
+      )
     },
   },
 }

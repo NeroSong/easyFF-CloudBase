@@ -10,18 +10,16 @@
           />
         </div>
         <div id="toptitle">
-            easyFF
+          easyFF
         </div>
         <el-menu
           :default-active="$route.path"
           class="el-menu-vertical"
-          @open="handleOpen"
-          @close="handleClose"
           background-color="#1F293D"
           text-color="#ffffff"
           active-text-color="#409EFF"
-          unique-opened="true"
-          router="true"
+          :unique-opened="true"
+          :router="true"
         >
           <el-menu-item index="/rules">
             <i class="el-icon-menu"></i>
@@ -31,10 +29,10 @@
             <i class="el-icon-s-order"></i>
             <span slot="title">调用记录</span>
           </el-menu-item>
-          <el-menu-item index="/monitor">
+          <!-- <el-menu-item index="/monitor">
             <i class="el-icon-message-solid"></i>
             <span slot="title">监控提醒</span>
-          </el-menu-item>
+          </el-menu-item> -->
           <el-menu-item index="/about">
             <i class="el-icon-info"></i>
             <span slot="title">使用说明</span>
@@ -59,11 +57,31 @@
 export default {
   name: "Home",
   components: {},
-  created() {},
+  created() {
+    this.annoyLogin()
+  },
   data() {
     return {}
   },
-  methods: {},
+  methods: {
+    async annoyLogin() {
+      const auth = this.$cloudbase.auth({ persistence: "local" })
+      const lgState = await auth.getLoginState()
+      if (lgState) {
+        console.log("has been Login")
+      } else {
+        console.log("Not Login, now go to login")
+        try {
+          await auth.anonymousAuthProvider().signIn()
+        } catch (error) {
+          this.$notify.error({
+            title: "错误",
+            message: "匿名登录失败，" + error,
+          })
+        }
+      }
+    },
+  },
 }
 </script>
 
@@ -77,7 +95,7 @@ body,
   height: 100%;
 }
 
-html{
+html {
   font-size: 14px;
 }
 </style>
@@ -137,7 +155,7 @@ body > .el-container {
 #toptitle {
   color: white;
   font-size: 1.5rem;
-  margin: 10px 0 ;
+  margin: 10px 0;
   font-weight: bolder;
 }
 </style>
