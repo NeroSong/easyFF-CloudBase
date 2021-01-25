@@ -52,27 +52,29 @@ yarn install && yarn serve
 
 处理完成后下载到本地，查看是否成功：
 
-如果一切顺利，表中的处理规则可在云开发各 SDK 中使用了。
+如果测试顺利，表中的处理规则可在云开发各 SDK 中使用了。
 
 例如在 Flutter 中：
 
 ```dart
 // 先通过SDK上传文件，或其它方式获取文件云端地址
 
-// 请求参数：@cloudPaths，已上传的文件云端地址列表
-//         @id        ，要执行的功能ID
-Map<String, dynamic> data = {
-    'cloudPaths': ['easyFF/abc_xxx.mp4', 'easyFF/123.mp3'],
-    'pid': 1001
-  };
+// 请求参数：@path，待处理文件云端地址
+//         @pid， 要执行的功能ID
+//         @t,    不同功能的参数
+const data = {
+  path: "cloud//xxx/abc.mp4",
+  pid : 1001,
+  t: 5
+};
 
-// 云函数名为 easyFF-ffmpeg，调用来进行我们设定好的处理
+// 调用云函数 easyFF-ffmpeg，通过不同参数实现不同功能
 CloudBaseResponse res = await cloudbase.callFunction('easyFF-ffmpeg', data);
 
 // 返回参数：@ret，为0则说明成功，否则失败
 //         @msg，成功返回处理后文件的云端地址，否则为失败提示信息
+//         如 { ret: 0, msg : "cloud//easyFF//xxx.jpg" }
 print(res.data)
-// { ret: 0, msg : "easyFF/finish/xxx.mp4" }
 ```
 
 ## 部署
