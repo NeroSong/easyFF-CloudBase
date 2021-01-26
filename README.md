@@ -21,7 +21,7 @@
 
 可直接加入现有的业务流程，也可在后台手动生成下载。
 
-后台包含简单的数据统计，可随时查看 API 调用情况。
+后台包含简单的数据统计，可随时查看调用情况。
 
 ## 开发者信息
 
@@ -46,15 +46,28 @@
 
 <img src="./pics/p1.png" />
 
+### 重要！
+因为框架限制云函数打包不得超过15M，所以目前包含的是一个精简版 FFmpeg ，出错率很高，需要**手动替换**：
+
+> 没有找到更好的方法，既能实现一建部署，又不能突破框架的大小限制。欢迎指点更好的解决方案，感谢！Thanks♪(･ω･)ﾉ
+
+点击下载 [完整版FFmpeg](https://github.com/NeroSong/FFmpeg-binary-centos/raw/main/fffmpeg)（大约70M），用其替换`cloudfunctions/easyFF-ffmpeg`目录下的`ffmpeg`文件，然后更新云函数：
+```bash
+# 在项目根目录下
+tcb fn code update easyFF-ffmpeg
+```
+
+更新完成后就可以正常使用啦！\\(^o^)/~
+
 选一个规则，点击最右端的测试:
 
 <img src="./pics/p2.png" />
 
-选择文件上传（可使用 test 目录中提供的文件），设定参数：
+点击打开控制台上传文件（可使用 test 目录中提供的文件），设定参数，粘贴fileID：
 
 <img src="./pics/p3.png" />
 
-处理完成后下载到本地，查看是否成功：
+处理需要几秒钟，完成后可下载到本地，查看是否成功：
 
 <img src="./pics/p4.png" />
 
