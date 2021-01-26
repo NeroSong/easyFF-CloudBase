@@ -8,7 +8,7 @@
       >
     </el-row>
     <div class="row-main">
-      <p style="font-size:1.1rem;">
+      <p style="font-size: 1.1rem">
         <span> <strong>easyFF</strong> </span>
         是基于 FFmpeg 的简单短视频处理服务 + 后台管理 工具。
       </p>
@@ -18,8 +18,17 @@
       <p>
         <span class="bgt">使用流程：</span>
       </p>
-      <p style="margin-left:20px;">
-        1. 部署成功后，在规则右端的操作栏中点击测试 <br />
+      <p style="margin-left: 20px">
+        0. 参照
+        <a
+          href="https://github.com/NeroSong/easyFF-CloudBase#%E9%87%8D%E8%A6%81"
+          target="_blank"
+        >
+          重要</a
+        >
+        提示 ，替换
+        <strong>完整版 FFmpeg </strong> 文件并更新云函数，否则可能无法正常运行!
+        1. 在规则右端的操作栏中点击测试 <br />
         2. 上传原始文件（测试可用test目录下的文件） <br />
         3. 云函数处理完成后返回生成文件，点击下载查看 <br />
         4. 如无问题则说明成功，可按照相关参数在各个客户端SDK调用 <br />
